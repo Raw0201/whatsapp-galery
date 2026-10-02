@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galería con Zoom y Enlace a WhatsApp</title>
+    <title>Galería Automática</title>
     <style>
         body {
             font-family: sans-serif;
@@ -16,33 +16,6 @@
             align-items: center;
         }
 
-        /* Panel de control */ 
-        .upload-zone {
-            margin-bottom: 30px;
-            border: 2px dashed #555;
-            padding: 20px;
-            border-radius: 8px;
-            background: #2a2a2a;
-            text-align: center;
-            width: 100%;
-            max-width: 500px;
-        }
-
-        .upload-zone input {
-            display: none;
-        }
-
-        .upload-btn {
-            background: #007bff;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            display: inline-block;
-            margin-top: 10px;
-        }
-
         /* Cuadrícula de Imágenes */
         .image-grid {
             display: grid;
@@ -51,6 +24,7 @@
             width: 100%;
             max-width: 1200px;
             padding: 10px;
+            margin-top: 20px;
         }
 
         .grid-item {
@@ -97,7 +71,6 @@
             pointer-events: auto;
         }
 
-        /* Contenedor interno para separar la imagen de los botones */
         .zoom-content {
             position: relative;
             display: flex;
@@ -116,7 +89,6 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.5);
         }
 
-        /* Indicador superior para cerrar */
         .close-hint {
             position: fixed;
             top: 20px;
@@ -129,7 +101,6 @@
             z-index: 1010;
         }
 
-        /* Botón de WhatsApp */
         .whatsapp-btn {
             position: fixed;
             bottom: 40px;
@@ -151,7 +122,6 @@
             pointer-events: none;
         }
 
-        /* Mostrar botón solo cuando el zoom esté activo */
         .zoom-overlay.active .whatsapp-btn {
             opacity: 1;
             transform: translateY(0);
@@ -163,7 +133,6 @@
             transform: scale(1.05);
         }
 
-        /* Icono SVG simple de WhatsApp */
         .whatsapp-icon {
             width: 20px;
             height: 20px;
@@ -173,25 +142,18 @@
 </head>
 <body>
 
-    <h1>Galería en Cuadrícula</h1>
-    
-    <div class="upload-zone">
-        <p>Agrega imágenes para actualizar la cuadrícula al instante</p>
-        <label class="upload-btn" for="file-input">Seleccionar Imágenes</label>
-        <input type="file" id="file-input" accept="image/*" multiple>
-    </div>
+    <h1>Mi Galería de Productos</h1>
 
+    <!-- Cuadrícula (Ya no hay zona de subir archivos) -->
     <div class="image-grid" id="image-grid"></div>
 
     <!-- Contenedor del Zoom -->
     <div class="zoom-overlay" id="zoom-overlay">
         <span class="close-hint">Haz clic en la imagen o fondo para cerrar</span>
-        
         <div class="zoom-content" id="zoom-content">
             <img id="zoom-img" src="" alt="Zoom">
         </div>
 
-        <!-- Botón de WhatsApp fuera del flujo de clic de cierre -->
         <a href="#" target="_blank" class="whatsapp-btn" id="whatsapp-btn">
             <svg class="whatsapp-icon" viewBox="0 0 24 24">
                 <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.4.01 12.008.01c3.202.001 6.212 1.246 8.477 3.516 2.266 2.27 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.457L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.623-1.023-5.086-2.884-6.949C16.528 2.013 14.069.99 11.45.99c-5.442 0-9.87 4.372-9.874 9.802-.001 1.73.463 3.423 1.343 4.927l-.997 3.645 3.725-.97z"/>
@@ -201,20 +163,17 @@
     </div>
 
     <script>
-        const fileInput = document.getElementById('file-input');
         const grid = document.getElementById('image-grid');
         const zoomOverlay = document.getElementById('zoom-overlay');
-        const zoomContent = document.getElementById('zoom-content');
         const zoomImg = document.getElementById('zoom-img');
         const whatsappBtn = document.getElementById('whatsapp-btn');
         
-        // CONFIGURACIÓN: Ingresa aquí tu número con código de país (ej: 52123456789)
         const TELEFONO_WHATSAPP = "50688424431"; 
         const MENSAJE_PREDEFINIDO = "Hola, me interesa obtener información sobre este producto de la galería.";
 
-        // CONFIGURACIÓN: Indica la carpeta y los nombres reales de tus archivos
+        // CONFIGURACIÓN: Modifica los nombres que están entre comillas 
+        // para que coincidan EXACTAMENTE con tus fotos reales en la carpeta imagenes
         const IMAGES_DIR = "imagenes/"; 
-
         const imagesList = [
             IMAGES_DIR + "producto1.jpg",
             IMAGES_DIR + "producto2.jpg",
@@ -228,17 +187,6 @@
             IMAGES_DIR + "producto10.jpg",
         ];
 
-        // let imagesList = [];
-
-        // fileInput.addEventListener('change', (e) => {
-        //     const files = e.target.files;
-        //     for (let file of files) {
-        //         const blobUrl = URL.createObjectURL(file);
-        //         imagesList.push(blobUrl);
-        //     }
-        //     renderGrid();
-        // });
-
         function renderGrid() {
             grid.innerHTML = '';
             imagesList.forEach((src) => {
@@ -247,6 +195,9 @@
                 
                 const img = document.createElement('img');
                 img.src = src;
+                
+                // Si escribes mal un nombre o la imagen no existe, oculta el cuadro roto
+                img.onerror = () => { item.style.display = 'none'; };
 
                 item.addEventListener('click', () => {
                     openZoom(src);
@@ -259,21 +210,19 @@
 
         function openZoom(src) {
             zoomImg.src = src;
-            
-            // CORRECCIÓN: Se añade la barra '/' después de wa.me y se concatena correctamente la variable
             const textoCodificado = encodeURIComponent(MENSAJE_PREDEFINIDO);
-            whatsappBtn.href = "https://wa.me/" + TELEFONO_WHATSAPP + "/?text=" + textoCodificado;
-            
+            whatsappBtn.href = "https://wa.me" + TELEFONO_WHATSAPP + "/?text=" + textoCodificado;
             zoomOverlay.classList.add('active');
         }
 
-        // El modal se cierra si haces clic en el fondo o en la imagen, pero NO en el botón de WhatsApp
         zoomOverlay.addEventListener('click', (e) => {
             if (!whatsappBtn.contains(e.target)) {
                 zoomOverlay.classList.remove('active');
                 setTimeout(() => { zoomImg.src = ''; }, 300);
             }
         });
+
+        renderGrid();
     </script>
 </body>
 </html>
