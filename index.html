@@ -212,16 +212,32 @@
         const TELEFONO_WHATSAPP = "50688424431"; 
         const MENSAJE_PREDEFINIDO = "Hola, me interesa obtener información sobre este producto de la galería.";
 
-        let imagesList = [];
+        // CONFIGURACIÓN: Indica la carpeta y los nombres reales de tus archivos
+        const IMAGES_DIR = "imagenes/"; 
 
-        fileInput.addEventListener('change', (e) => {
-            const files = e.target.files;
-            for (let file of files) {
-                const blobUrl = URL.createObjectURL(file);
-                imagesList.push(blobUrl);
-            }
-            renderGrid();
-        });
+        const imagesList = [
+            IMAGES_DIR + "producto1.jpg",
+            IMAGES_DIR + "producto2.jpg",
+            IMAGES_DIR + "producto3.jpg",
+            IMAGES_DIR + "producto4.jpg",
+            IMAGES_DIR + "producto5.jpg",
+            IMAGES_DIR + "producto6.jpg",
+            IMAGES_DIR + "producto7.jpg",
+            IMAGES_DIR + "producto8.jpg",
+            IMAGES_DIR + "producto9.jpg",
+            IMAGES_DIR + "producto10.jpg",
+        ];
+
+        // let imagesList = [];
+
+        // fileInput.addEventListener('change', (e) => {
+        //     const files = e.target.files;
+        //     for (let file of files) {
+        //         const blobUrl = URL.createObjectURL(file);
+        //         imagesList.push(blobUrl);
+        //     }
+        //     renderGrid();
+        // });
 
         function renderGrid() {
             grid.innerHTML = '';
