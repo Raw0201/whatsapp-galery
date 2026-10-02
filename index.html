@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galería Automática</title>
+    <title>Galería Automática con Enlace de Imagen</title>
     <style>
         body {
             font-family: sans-serif;
@@ -144,7 +144,6 @@
 
     <h1>Mi Galería de Productos</h1>
 
-    <!-- Cuadrícula (Ya no hay zona de subir archivos) -->
     <div class="image-grid" id="image-grid"></div>
 
     <!-- Contenedor del Zoom -->
@@ -169,10 +168,9 @@
         const whatsappBtn = document.getElementById('whatsapp-btn');
         
         const TELEFONO_WHATSAPP = "50688424431"; 
-        const MENSAJE_PREDEFINIDO = "Hola, me interesa obtener información sobre este producto de la galería.";
+        const MENSAJE_PREDEFINIDO = "Hola, me interesa obtener información sobre este producto de la galería:";
 
-        // CONFIGURACIÓN: Modifica los nombres que están entre comillas 
-        // para que coincidan EXACTAMENTE con tus fotos reales en la carpeta imagenes
+        // CONFIGURACIÓN: Lista de tus imágenes en GitHub
         const IMAGES_DIR = "imagenes/"; 
         const imagesList = [
             IMAGES_DIR + "producto1.jpg",
@@ -196,7 +194,6 @@
                 const img = document.createElement('img');
                 img.src = src;
                 
-                // Si escribes mal un nombre o la imagen no existe, oculta el cuadro roto
                 img.onerror = () => { item.style.display = 'none'; };
 
                 item.addEventListener('click', () => {
@@ -210,8 +207,20 @@
 
         function openZoom(src) {
             zoomImg.src = src;
-            const textoCodificado = encodeURIComponent(MENSAJE_PREDEFINIDO);
-            whatsappBtn.href = "https://wa.me" + TELEFONO_WHATSAPP + "/?text=" + textoCodificado;
+
+            // Obtiene la dirección base pública en internet (ej: https://github.io)
+            const urlBasePublica = window.location.href.split('?')[0];
+            
+            // Crea el enlace de internet completo hacia la imagen seleccionada
+            const urlCompletaImagen = urlBasePublica + src;
+
+            // Une el mensaje de texto original con el enlace público de la foto
+            const mensajeCompleto = MENSAJE_PREDEFINIDO + "\n\n" + urlCompletaImagen;
+            const textoCodificado = encodeURIComponent(mensajeCompleto);
+            
+            // Asigna el enlace definitivo
+            whatsappBtn.href = "https://wa.me/" + TELEFONO_WHATSAPP + "/?text=" + textoCodificado;
+            
             zoomOverlay.classList.add('active');
         }
 
